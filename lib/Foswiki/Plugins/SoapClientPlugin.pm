@@ -43,12 +43,12 @@
 # the function name. Remove disabled handlers you do not need.
 #
 # NOTE: To interact with TWiki use the official TWiki functions 
-# in the TWiki::Func module. Do not reference any functions or
+# in the Foswiki::Func module. Do not reference any functions or
 # variables elsewhere in TWiki!!
 
 
 # =========================
-package TWiki::Plugins::SoapClientPlugin;    # change the package name and $pluginName!!!
+package Foswiki::Plugins::SoapClientPlugin;    # change the package name and $pluginName!!!
 
 # =========================
 use vars qw(
@@ -78,28 +78,28 @@ sub initPlugin
     ( $topic, $web, $user, $installWeb ) = @_;
 
     # check for Plugins.pm versions
-    if( $TWiki::Plugins::VERSION < 1 ) {
-        TWiki::Func::writeWarning( "Version mismatch between $pluginName and Plugins.pm" );
+    if( $Foswiki::Plugins::VERSION < 1 ) {
+        Foswiki::Func::writeWarning( "Version mismatch between $pluginName and Plugins.pm" );
         return 0;
     }
 
     # Get plugin debug flag
-    $debug = TWiki::Func::getPreferencesFlag( "\U$pluginName\E_DEBUG" );
+    $debug = Foswiki::Func::getPreferencesFlag( "\U$pluginName\E_DEBUG" );
 
     # Get plugin preferences, the variable defined by:          * Set EXAMPLE = ...
-    $exampleCfgVar = &TWiki::Func::getPreferencesValue( "EMPTYPLUGIN_EXAMPLE" ) || "default";
+    $exampleCfgVar = &Foswiki::Func::getPreferencesValue( "EMPTYPLUGIN_EXAMPLE" ) || "default";
 
     # Plugin correctly initialized
-    TWiki::Func::writeDebug( "- TWiki::Plugins::${pluginName}::initPlugin( $web.$topic ) is OK" ) if $debug;
+    Foswiki::Func::writeDebug( "- Foswiki::Plugins::${pluginName}::initPlugin( $web.$topic ) is OK" ) if $debug;
     return 1;
 }
 
 # =========================
 sub doSoapRequest
 {
-    my $service= TWiki::Func::extractNameValuePair( $_[0], "service");
-    my $call_with_params= TWiki::Func::extractNameValuePair( $_[0], "call");
-    my $format= TWiki::Func::extractNameValuePair( $_[0], "format");
+    my $service= Foswiki::Func::extractNameValuePair( $_[0], "service");
+    my $call_with_params= Foswiki::Func::extractNameValuePair( $_[0], "call");
+    my $format= Foswiki::Func::extractNameValuePair( $_[0], "format");
     my $text = "";
 
 #       my $service = SOAP::Lite
@@ -171,7 +171,7 @@ sub startRenderingHandler
 {
 ### my ( $text, $web ) = @_;   # do not uncomment, use $_[0], $_[1] instead
 
-    TWiki::Func::writeDebug( "- ${pluginName}::startRenderingHandler( $_[1] )" ) if $debug;
+    Foswiki::Func::writeDebug( "- ${pluginName}::startRenderingHandler( $_[1] )" ) if $debug;
 
     # This handler is called by getRenderedVersion just before the line loop
 
