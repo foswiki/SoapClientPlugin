@@ -5,7 +5,6 @@ This plugin will provide a Foswiki Topic interface to SOAP::Lite calls.
 
 It will cause the rendering of the topic to be as slow as the internet request - so its probably best to do on a local machine only.
 
-
 ---++ Syntax Rules
 
    * the service parameter specifies the WSDL interface
@@ -19,6 +18,9 @@ It will cause the rendering of the topic to be as slow as the internet request -
 Examples using the G-Forge Soap Interface - http://gforge.org/soap/index.php
    * %<nop>SOAP{service="http://gforge.org/soap/index.php" call="getPublicProjectNames()" format="   * Group: $list_element $n"}%
 %SOAP{service="http://gforge.org/soap/index.php" call="getPublicProjectNames()" format="   * Group: $list_element $n"}%
+
+
+unfortuanatly, GForge has discontinued this SOAP endpoint - if you find a simple reliable example please tell me :)
 
 ---++ <nop>%TOPIC% Global Settings
 
@@ -42,8 +44,9 @@ __Note:__ You do not need to install anything on the browser to use this plugin.
 ---++ Plugin Info
 
 |  Plugin Author: | Foswiki:Main/SvenDowideit - <img src="%ATTACHURLPATH%/wikiringlogo20x20.png" /> http://www.wikiring.com |
-|  Plugin Version: | 24 July 2006 (V1.100) |
+|  Plugin Version: | Feb 2009 (V1.200) |
 |  Change History: | <!-- versions below in reverse order -->&nbsp; |
+| 20 Feb 2009 : | port to Foswiki |
 |  24 July 2006: | fix docco to reflect the changed example (GForge changed the wsdl), tested on TWiki4.0 |
 |  19 Sep 2003: | Initial version |
 |  CPAN Dependencies: | SOAP::Lite (and its dependancies) |
@@ -56,14 +59,4 @@ __Related Topics:__ %SYSTEMWEB%.DefaultPreferences, %USERSWEB%.SitePreferences, 
 
 -- Foswiki:Main/SvenDowideit
 
-%META:FORM{name="PackageForm"}%
-%META:FIELD{name="TopicClassification" attributes="" title="TopicClassification" value="PluginPackage"}%
-%META:FIELD{name="TestedOnTWiki" attributes="" title="TestedOnTWiki" value="01 Feb 2003"}%
-%META:FIELD{name="TestedOnOS" attributes="" title="TestedOnOS" value="OsLinux"}%
-%META:FIELD{name="ShouldRunOnOS" attributes="" title="ShouldRunOnOS" value="OsLinux"}%
-%META:FIELD{name="InstalledOnTWikiOrg" attributes="" title="InstalledOnTWikiOrg" value="No"}%
-%META:FIELD{name="DemoUrl" attributes="" title="DemoUrl" value=""}%
-%META:FIELD{name="DevelopedInSVN" attributes="" title="DevelopedInSVN" value="Yes"}%
-%META:FIELD{name="ModificationPolicy" attributes="" title="ModificationPolicy" value="ContactAuthorFirst"}%
-%META:FIELD{name="RelatedTopics" attributes="" title="RelatedTopics" value="SoapClientPluginDev"}%
-%META:FILEATTACHMENT{name="wikiringlogo20x20.png" attachment="wikiringlogo20x20.png" attr="" comment="" date="1153746500" path="wikiringlogo20x20.png" size="1343" stream="wikiringlogo20x20.png" user="Main.WikiGuest" version="1"}%
+META:FILEATTACHMENT{name="wikiringlogo20x20.png" attachment="wikiringlogo20x20.png" attr="" comment="" date="1153746500" path="wikiringlogo20x20.png" size="1343" stream="wikiringlogo20x20.png" user="Main.WikiGuest" version="1"}%

@@ -1,11 +1,11 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, http://foswiki.org/
 #
-# Copyright (C) 2000-2003 Andrea Sterbini, a.sterbini@flashnet.it
-# Copyright (C) 2001-2003 Peter Thoeny, peter@thoeny.com
+# Copyright (C) 2003-2009 SvenDowideit@fosiki.com
+
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
+# as published by the Free Software Foundation; either version 3
 # of the License, or (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -14,63 +14,19 @@
 # GNU General Public License for more details, published at 
 # http://www.gnu.org/copyleft/gpl.html
 #
-# =========================
-#
-# This is an empty TWiki plugin. Use it as a template
-# for your own plugins; see %SYSTEMWEB%.Plugins for details.
-#
-# Each plugin is a package that may contain these functions:        VERSION:
-#
-#   initPlugin              ( $topic, $web, $user, $installWeb )    1.000
-#   initializeUserHandler   ( $loginName, $url, $pathInfo )         1.010
-#   registrationHandler     ( $web, $wikiName, $loginName )         1.010
-#   commonTagsHandler       ( $text, $topic, $web )                 1.000
-#   startRenderingHandler   ( $text, $web )                         1.000
-#   outsidePREHandler       ( $text )                               1.000
-#   insidePREHandler        ( $text )                               1.000
-#   endRenderingHandler     ( $text )                               1.000
-#   beforeEditHandler       ( $text, $topic, $web )                 1.010
-#   afterEditHandler        ( $text, $topic, $web )                 1.010
-#   beforeSaveHandler       ( $text, $topic, $web )                 1.010
-#   writeHeaderHandler      ( $query )                              1.010  Use only in one Plugin
-#   redirectCgiQueryHandler ( $query, $url )                        1.010  Use only in one Plugin
-#   getSessionValueHandler  ( $key )                                1.010  Use only in one Plugin
-#   setSessionValueHandler  ( $key, $value )                        1.010  Use only in one Plugin
-#
-# initPlugin is required, all other are optional. 
-# For increased performance, all handlers except initPlugin are
-# disabled. To enable a handler remove the leading DISABLE_ from
-# the function name. Remove disabled handlers you do not need.
-#
-# NOTE: To interact with TWiki use the official TWiki functions 
-# in the Foswiki::Func module. Do not reference any functions or
-# variables elsewhere in TWiki!!
 
-
-# =========================
-package Foswiki::Plugins::SoapClientPlugin;    # change the package name and $pluginName!!!
-
-# =========================
+package Foswiki::Plugins::SoapClientPlugin;
 use vars qw(
         $web $topic $user $installWeb $VERSION $RELEASE $pluginName
         $debug $exampleCfgVar
     );
 
-# This should always be $Rev$ so that TWiki can determine the checked-in
-# status of the plugin. It is used by the build automation tools, so
-# you should leave it alone.
 $VERSION = '$Rev$';
-
-# This is a free-form string you can use to "name" your own plugin version.
-# It is *not* used by the build automation tools, but is reported as part
-# of the version number in PLUGINDESCRIPTIONS.
-$RELEASE = 'Dakar';
-
+$RELEASE = '1.200';
 $pluginName = 'SoapClientPlugin';  # Name of this Plugin
 
 use SOAP::Lite;
-#eval { require SOAP::Lite }
-#return "<font color=red>SamplePlugin: error loading needed modules ($@)</font>" if $@;
+use Error qw( :try );
 
 # =========================
 sub initPlugin
@@ -115,7 +71,7 @@ sub doSoapRequest
     $call = $1;
     my $params = $2;
 
-#    try {
+    try {
         my $method = SOAP::Data->name($call)
                          ->attr({xmlns => $service});
 
@@ -148,11 +104,13 @@ sub doSoapRequest
         } else {
             $text = $test. "mmm".ref $res->result ."\n";
         }
-#    } catch Error::Simple with {
-#        #TODO: some sort of error response
-#        my $e = shift;
-#        $text = 'Error during SOAP operation: '.$e;
-#    }
+    } catch Error::Simple with {
+        #TODO: some sort of error response
+        my $e = shift;
+        my $err = "$e";
+        $err =~ s/\n/<br \>/g;
+        $text = "\n<code>\nError during SOAP operation: \n$err\n</code>";
+    }
 
     $text =~ s/\$n/\n/g;
 
