@@ -20,7 +20,7 @@ Examples using the G-Forge Soap Interface - http://gforge.org/soap/index.php
 %SOAP{service="http://gforge.org/soap/index.php" call="getPublicProjectNames()" format="   * Group: $list_element $n"}%
 
 
-unfortuanatly, GForge has discontinued this SOAP endpoint - if you find a simple reliable example please tell me :)
+unfortuanatly, GForge has discontinued or moved this SOAP endpoint - if you find a simple reliable example please tell me
 
 ---++ <nop>%TOPIC% Global Settings
 
@@ -38,7 +38,7 @@ __Note:__ You do not need to install anything on the browser to use this plugin.
 
    * Download the ZIP file from the Plugin web (see below)
    * install SOAP::Lite from CPAN
-   * Unzip ==%TOPIC%.zip== in your twiki installation directory. Content: <table cellspacing="1" cellpadding="0" border="1">       *File:*  *Description:*        ==data/System/%TOPIC%.txt==  Plugin topic        ==data/System/%TOPIC%.txt,v==  Plugin topic repository        ==lib/Foswiki/Plugins/%TOPIC%.pm==  Plugin Perl module  </table>
+   * Unzip ==%TOPIC%.zip== in your foswiki installation directory. Content: <table cellspacing="1" cellpadding="0" border="1">       *File:*  *Description:*        ==data/System/%TOPIC%.txt==  Plugin topic        ==data/System/%TOPIC%.txt,v==  Plugin topic repository        ==lib/Foswiki/Plugins/%TOPIC%.pm==  Plugin Perl module  </table>
    * use the configure script to enable
 
 ---++ Plugin Info
@@ -59,4 +59,4 @@ __Related Topics:__ %SYSTEMWEB%.DefaultPreferences, %USERSWEB%.SitePreferences, 
 
 -- Foswiki:Main/SvenDowideit
 
-META:FILEATTACHMENT{name="wikiringlogo20x20.png" attachment="wikiringlogo20x20.png" attr="" comment="" date="1153746500" path="wikiringlogo20x20.png" size="1343" stream="wikiringlogo20x20.png" user="Main.WikiGuest" version="1"}%
+%META:FILEATTACHMENT{name="wikiringlogo20x20.png" attachment="wikiringlogo20x20.png" attr="" comment="" date="1153746500" path="wikiringlogo20x20.png" size="1343" stream="wikiringlogo20x20.png" user="Main.WikiGuest" version="1"}%
