@@ -11,102 +11,107 @@
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details, published at 
+# GNU General Public License for more details, published at
 # http://www.gnu.org/copyleft/gpl.html
 #
 
 package Foswiki::Plugins::SoapClientPlugin;
 use vars qw(
-        $web $topic $user $installWeb $VERSION $RELEASE $pluginName
-        $debug $exampleCfgVar
-    );
+  $web $topic $user $installWeb $VERSION $RELEASE $pluginName
+  $debug $exampleCfgVar
+);
 
-$VERSION = '$Rev$';
-$RELEASE = '1.200';
-$pluginName = 'SoapClientPlugin';  # Name of this Plugin
+$VERSION    = '$Rev$';
+$RELEASE    = '1.200';
+$pluginName = 'SoapClientPlugin';    # Name of this Plugin
 
 use SOAP::Lite;
 use Error qw( :try );
 
 # =========================
-sub initPlugin
-{
+sub initPlugin {
     ( $topic, $web, $user, $installWeb ) = @_;
 
     # check for Plugins.pm versions
-    if( $Foswiki::Plugins::VERSION < 1 ) {
-        Foswiki::Func::writeWarning( "Version mismatch between $pluginName and Plugins.pm" );
+    if ( $Foswiki::Plugins::VERSION < 1 ) {
+        Foswiki::Func::writeWarning(
+            "Version mismatch between $pluginName and Plugins.pm");
         return 0;
     }
 
     # Get plugin debug flag
-    $debug = Foswiki::Func::getPreferencesFlag( "\U$pluginName\E_DEBUG" );
+    $debug = Foswiki::Func::getPreferencesFlag("\U$pluginName\E_DEBUG");
 
-    # Get plugin preferences, the variable defined by:          * Set EXAMPLE = ...
-    $exampleCfgVar = &Foswiki::Func::getPreferencesValue( "EMPTYPLUGIN_EXAMPLE" ) || "default";
+ # Get plugin preferences, the variable defined by:          * Set EXAMPLE = ...
+    $exampleCfgVar = &Foswiki::Func::getPreferencesValue("EMPTYPLUGIN_EXAMPLE")
+      || "default";
 
     # Plugin correctly initialized
-    Foswiki::Func::writeDebug( "- Foswiki::Plugins::${pluginName}::initPlugin( $web.$topic ) is OK" ) if $debug;
+    Foswiki::Func::writeDebug(
+        "- Foswiki::Plugins::${pluginName}::initPlugin( $web.$topic ) is OK")
+      if $debug;
     return 1;
 }
 
 # =========================
-sub doSoapRequest
-{
-    my $service= Foswiki::Func::extractNameValuePair( $_[0], "service");
-    my $call_with_params= Foswiki::Func::extractNameValuePair( $_[0], "call");
-    my $format= Foswiki::Func::extractNameValuePair( $_[0], "format");
+sub doSoapRequest {
+    my $service = Foswiki::Func::extractNameValuePair( $_[0], "service" );
+    my $call_with_params = Foswiki::Func::extractNameValuePair( $_[0], "call" );
+    my $format = Foswiki::Func::extractNameValuePair( $_[0], "format" );
     my $text = "";
 
-#       my $service = SOAP::Lite
-#         -> service($service);
-#         -> service('http://gforge.org/soap/SoapAPI.php?wsdl');
-#       @results = @{$service->getPublicProjectNames()};
+    #       my $service = SOAP::Lite
+    #         -> service($service);
+    #         -> service('http://gforge.org/soap/SoapAPI.php?wsdl');
+    #       @results = @{$service->getPublicProjectNames()};
 
-#$call="getPublicProjectNames";
-#$service= "http://gforge.org/soap/SoapAPI.php";
+    #$call="getPublicProjectNames";
+    #$service= "http://gforge.org/soap/SoapAPI.php";
 
     my $call = $call_with_params;
-    $call =~ /(.*)[(](.*)[)]/ ;
+    $call =~ /(.*)[(](.*)[)]/;
     $call = $1;
     my $params = $2;
 
     try {
-        my $method = SOAP::Data->name($call)
-                         ->attr({xmlns => $service});
+        my $method = SOAP::Data->name($call)->attr( { xmlns => $service } );
 
-        my @parameters = split( /,/, $params);
-        my $res = SOAP::Lite
-          -> service($service."?wsdl")
-          -> proxy($service)
-          -> call($method => @parameters);
+        my @parameters = split( /,/, $params );
+        my $res =
+          SOAP::Lite->service( $service . "?wsdl" )->proxy($service)
+          ->call( $method => @parameters );
 
-
-        $text = $text."{$params}";
+        $text = $text . "{$params}";
         foreach $result (@parameters) {
-                $text = $text."($result);";
+            $text = $text . "($result);";
         }
 
-        if (ref $res->result eq "SCALAR") {
-            $text = $text. "scalar\n";
-        } elsif (ref $res->result eq "ARRAY") {
-            @results = @{$res->result};
+        if ( ref $res->result eq "SCALAR" ) {
+            $text = $text . "scalar\n";
+        }
+        elsif ( ref $res->result eq "ARRAY" ) {
+            @results = @{ $res->result };
             foreach $result (@results) {
                 my $tmp = $format;
                 $tmp =~ s/\$list_element/$result/geo;
-                $text = $text.$tmp;
+                $text = $text . $tmp;
             }
-        } elsif (ref $res->result eq "HASH") {
-            # split up the format, finding all the $field() bits, and then use them in the HASH
+        }
+        elsif ( ref $res->result eq "HASH" ) {
+
+# split up the format, finding all the $field() bits, and then use them in the HASH
             $text = $format;
             my $mmm = "v";
             $text =~ s/\$struct\(([^)]*)\)/getHash($res->result, $1)/ge;
-        } else {
-            $text = $test. "mmm".ref $res->result ."\n";
         }
-    } catch Error::Simple with {
+        else {
+            $text = $test . "mmm" . ref $res->result . "\n";
+        }
+    }
+    catch Error::Simple with {
+
         #TODO: some sort of error response
-        my $e = shift;
+        my $e   = shift;
         my $err = "$e";
         $err =~ s/\n/<br \>/g;
         $text = "\n<code>\nError during SOAP operation: \n$err\n</code>";
@@ -118,18 +123,16 @@ sub doSoapRequest
 }
 
 # =========================
-sub getHash
-{
-        return $_[0]->{$_[1]};
+sub getHash {
+    return $_[0]->{ $_[1] };
 }
 
-
 # =========================
-sub startRenderingHandler
-{
+sub startRenderingHandler {
 ### my ( $text, $web ) = @_;   # do not uncomment, use $_[0], $_[1] instead
 
-    Foswiki::Func::writeDebug( "- ${pluginName}::startRenderingHandler( $_[1] )" ) if $debug;
+    Foswiki::Func::writeDebug("- ${pluginName}::startRenderingHandler( $_[1] )")
+      if $debug;
 
     # This handler is called by getRenderedVersion just before the line loop
 
@@ -138,7 +141,6 @@ sub startRenderingHandler
 
     $_[0] =~ s/%SOAP{(.*?)}%/doSoapRequest($1)/geo;
 }
-
 
 # =========================
 
